@@ -15,11 +15,11 @@ class CustomAuthButton extends StatelessWidget {
     size = MediaQuery.sizeOf(context);
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: size.width * 0.03,
+        horizontal: size.width * 0.01,
       ),
       child: MaterialButton(
         color: Colors.blue,
-        onPressed: () {},
+        onPressed: onPressed,
         height: size.height * 0.07,
         minWidth: size.width,
         shape: const StadiumBorder(),

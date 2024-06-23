@@ -8,21 +8,26 @@ class CustomTextFormField extends StatelessWidget {
   final FocusNode? nextFocusNode;
   final bool? obsecureText;
   final IconButton? suffixIconButton;
+  final TextInputType textInputType;
+  final TextCapitalization? textCapitalization;
   const CustomTextFormField({
     super.key,
     required this.hintText,
     required this.textEditingController,
     required this.prefixIcon,
     required this.currentFocusNode,
+    required this.textInputType,
     this.nextFocusNode,
     this.obsecureText,
     this.suffixIconButton,
+    this.textCapitalization,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       focusNode: currentFocusNode,
+      textCapitalization: textCapitalization ?? TextCapitalization.none,
       obscureText: obsecureText ?? false,
       onFieldSubmitted: (value) {
         FocusScope.of(context).requestFocus(nextFocusNode);

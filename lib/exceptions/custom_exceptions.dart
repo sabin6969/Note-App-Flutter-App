@@ -19,3 +19,9 @@ class ServerRequestTimeout extends CustomException {
   ServerRequestTimeout()
       : super(message: "Server request timeout! please try again");
 }
+
+class ConflictError extends CustomException {
+  String? errorMessage;
+  ConflictError({this.errorMessage})
+      : super(message: errorMessage ?? "Confict Occured in server");
+}
