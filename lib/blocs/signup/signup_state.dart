@@ -15,3 +15,8 @@ final class SignupFailedState extends SignupState {
 }
 
 final class SignupLoadingState extends SignupState {}
+
+final class SignupValidationError extends SignupState {
+  final String message;
+  SignupValidationError({required this.message});
+}

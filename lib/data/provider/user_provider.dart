@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart';
 import 'package:note_app_flutter_mobile_app/constants/api_constant.dart';
+import 'package:note_app_flutter_mobile_app/data/models/login_response_model.dart';
 import 'package:note_app_flutter_mobile_app/exceptions/custom_exceptions.dart';
 
 class UserProvider {
@@ -34,14 +35,14 @@ class UserProvider {
         },
       );
       Response response = await Response.fromStream(streamedResponse);
-      String message = getResponseBody(response);
+      String message = getSignupResponse(response);
       return message;
     } catch (e) {
       return Future.error(e);
     }
   }
 
-  getResponseBody(Response response) {
+  String getSignupResponse(Response response) {
     switch (response.statusCode) {
       case 201:
         return jsonDecode(response.body)["message"];
@@ -50,6 +51,40 @@ class UserProvider {
             errorMessage: jsonDecode(response.body)["message"]);
       case 409:
         throw ConflictError(errorMessage: jsonDecode(response.body)["message"]);
+      case 500:
+        throw InternalServerError(
+            errorMessage: jsonDecode(response.body)["message"]);
+      default:
+        throw const CustomException(message: "Something went wrong");
+    }
+  }
+
+  Future<LoginResponse> login(
+      {required String email, required String password}) async {
+    Response response = await post(
+      Uri.parse(
+        "$baseUrl/$userRoute/login",
+      ),
+      body: jsonEncode(
+        {"email": email, "password": password},
+      ),
+      headers: {"Content-Type": "application/json"},
+    );
+    return getLoginResponse(response);
+  }
+
+  LoginResponse getLoginResponse(Response response) {
+    switch (response.statusCode) {
+      case 200:
+        return LoginResponse.fromJson(jsonDecode(response.body));
+      case 400:
+        throw BadRequestException(
+            errorMessage: jsonDecode(response.body)["message"]);
+      case 401:
+        throw UnauthorizedError(
+            errorMessage: jsonDecode(response.body)["message"]);
+      case 404:
+        throw NotFoundError(errorMessage: jsonDecode(response.body)["message"]);
       case 500:
         throw InternalServerError(
             errorMessage: jsonDecode(response.body)["message"]);

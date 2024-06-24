@@ -25,3 +25,16 @@ class ConflictError extends CustomException {
   ConflictError({this.errorMessage})
       : super(message: errorMessage ?? "Confict Occured in server");
 }
+
+class NotFoundError extends CustomException {
+  final String errorMessage;
+
+  const NotFoundError({required this.errorMessage})
+      : super(message: errorMessage);
+}
+
+class UnauthorizedError extends CustomException {
+  final String errorMessage;
+  const UnauthorizedError({required this.errorMessage})
+      : super(message: errorMessage);
+}

@@ -8,7 +8,9 @@ import 'package:note_app_flutter_mobile_app/blocs/signup/signup_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_state.dart';
 import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
 import 'package:note_app_flutter_mobile_app/main.dart';
+import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
 import 'package:note_app_flutter_mobile_app/utils/image_picker_util.dart';
+import 'package:note_app_flutter_mobile_app/utils/loading_dialog.dart';
 import 'package:note_app_flutter_mobile_app/utils/show_toast_message.dart';
 import 'package:note_app_flutter_mobile_app/widgets/custom_auth_button.dart';
 import 'package:note_app_flutter_mobile_app/widgets/custom_text_field.dart';
@@ -40,7 +42,7 @@ class _SignupViewState extends State<SignupView> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          "Create Account",
+          "Signup",
         ),
       ),
       body: BlocConsumer<SignupBloc, SignupState>(
@@ -155,6 +157,24 @@ class _SignupViewState extends State<SignupView> {
                               );
                         },
                       ),
+                      SizedBox(
+                        height: size.height * 0.03,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Already have an account?"),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppRouteNames.login,
+                              );
+                            },
+                            child: const Text("Login"),
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -168,16 +188,12 @@ class _SignupViewState extends State<SignupView> {
             showToastMessage(message: state.errorMessage);
           } else if (state is SignupSucessState) {
             Navigator.pop(context);
+            Navigator.pushReplacementNamed(context, AppRouteNames.login);
             showToastMessage(message: state.message);
           } else if (state is SignupLoadingState) {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            );
+            showLoadingDialog(context: context);
+          } else if (state is SignupValidationError) {
+            showToastMessage(message: state.message);
           }
         },
       ),

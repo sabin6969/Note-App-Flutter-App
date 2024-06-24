@@ -14,10 +14,10 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
     if (event.email.isEmpty ||
         event.fullName.isEmpty ||
         event.password.isEmpty) {
-      emit(SignupFailedState(errorMessage: "All fields are required"));
+      emit(SignupValidationError(message: "All fields are required"));
     } else {
       if (event.imageFile == null) {
-        emit(SignupFailedState(errorMessage: "Please select a profile image"));
+        emit(SignupValidationError(message: "Please select a profile image"));
       } else {
         try {
           emit(SignupLoadingState());
