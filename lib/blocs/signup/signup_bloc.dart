@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_state.dart';
@@ -28,6 +30,13 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
             fullName: event.fullName,
           );
           emit(SignupSucessState(message: message));
+        } on SocketException {
+          emit(
+            SignupFailedState(
+              errorMessage:
+                  "No internet connection\nPlease check your internet connection",
+            ),
+          );
         } on CustomException catch (e) {
           emit(SignupFailedState(errorMessage: e.message));
         } catch (e) {

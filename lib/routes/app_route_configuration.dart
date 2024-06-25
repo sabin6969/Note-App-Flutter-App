@@ -6,6 +6,7 @@ import 'package:note_app_flutter_mobile_app/data/provider/user_provider.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/user_repository.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
 import 'package:note_app_flutter_mobile_app/views/fall_back_view.dart';
+import 'package:note_app_flutter_mobile_app/views/home_view.dart';
 import 'package:note_app_flutter_mobile_app/views/login_view.dart';
 import 'package:note_app_flutter_mobile_app/views/signup_view.dart';
 
@@ -36,6 +37,11 @@ class AppRouteConfiguration {
             ),
           ),
         );
+      case AppRouteNames.home:
+        return MaterialPageRoute(
+          builder: (context) => const HomeView(),
+        );
+
       default:
         return MaterialPageRoute(
           builder: (context) => const FallBackView(),

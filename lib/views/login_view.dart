@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:note_app_flutter_mobile_app/blocs/login/login_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/login/login_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/login/login_state.dart';
@@ -39,10 +40,10 @@ class _LoginViewState extends State<LoginView> {
             showLoadingDialog(context: context);
           } else if (state is LoginSucessState) {
             Navigator.pop(context);
-
             showToastMessage(
-                message: state.loginResponse.message ?? "Login Sucess Vayo");
-            // TODO: navigate user to home page
+                message: state.loginResponse.message ?? "Login Sucess");
+            // Navigating user to home page once logged in sucessfully
+            context.pushReplacementNamed(AppRouteNames.home);
           } else if (state is LoginFailedState) {
             Navigator.pop(context);
             showToastMessage(message: state.message);
@@ -119,10 +120,7 @@ class _LoginViewState extends State<LoginView> {
                         const Text("New here?"),
                         TextButton(
                           onPressed: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRouteNames.signup,
-                            );
+                            context.pushReplacementNamed(AppRouteNames.signup);
                           },
                           child: const Text("Signup"),
                         )

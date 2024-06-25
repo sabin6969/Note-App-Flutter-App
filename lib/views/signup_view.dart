@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_event.dart';
@@ -166,10 +167,7 @@ class _SignupViewState extends State<SignupView> {
                           const Text("Already have an account?"),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                context,
-                                AppRouteNames.login,
-                              );
+                              context.pushReplacementNamed(AppRouteNames.login);
                             },
                             child: const Text("Login"),
                           )
@@ -188,8 +186,9 @@ class _SignupViewState extends State<SignupView> {
             showToastMessage(message: state.errorMessage);
           } else if (state is SignupSucessState) {
             Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, AppRouteNames.login);
             showToastMessage(message: state.message);
+            // Navigating user to login page after sucessfull signup
+            Navigator.pushReplacementNamed(context, AppRouteNames.login);
           } else if (state is SignupLoadingState) {
             showLoadingDialog(context: context);
           } else if (state is SignupValidationError) {

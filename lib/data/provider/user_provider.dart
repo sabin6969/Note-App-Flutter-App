@@ -61,16 +61,25 @@ class UserProvider {
 
   Future<LoginResponse> login(
       {required String email, required String password}) async {
-    Response response = await post(
-      Uri.parse(
-        "$baseUrl/$userRoute/login",
-      ),
-      body: jsonEncode(
-        {"email": email, "password": password},
-      ),
-      headers: {"Content-Type": "application/json"},
-    );
-    return getLoginResponse(response);
+    try {
+      Response response = await post(
+        Uri.parse(
+          "$baseUrl/$userRoute/login",
+        ),
+        body: jsonEncode(
+          {"email": email, "password": password},
+        ),
+        headers: {"Content-Type": "application/json"},
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw ServerRequestTimeout();
+        },
+      );
+      return getLoginResponse(response);
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 
   LoginResponse getLoginResponse(Response response) {

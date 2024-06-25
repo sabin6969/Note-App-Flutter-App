@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/login/login_event.dart';
@@ -25,9 +26,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginSucessState(loginResponse: loginResponse));
       } on CustomException catch (e) {
         emit(LoginFailedState(message: e.message));
-      } catch (e) {
+      } on SocketException {
         emit(LoginFailedState(
-            message: "Something went wrong while login try again"));
+            message:
+                "No internet detected\nPlease check your internet connection"));
+      } catch (e) {
+        emit(
+          LoginFailedState(
+            message: "Something went wrong while login try again",
+          ),
+        );
       }
     }
   }
