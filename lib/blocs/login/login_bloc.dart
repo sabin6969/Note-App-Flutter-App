@@ -7,6 +7,7 @@ import 'package:note_app_flutter_mobile_app/blocs/login/login_state.dart';
 import 'package:note_app_flutter_mobile_app/data/models/login_response_model.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/user_repository.dart';
 import 'package:note_app_flutter_mobile_app/exceptions/custom_exceptions.dart';
+import 'package:note_app_flutter_mobile_app/services/shared_preferences_services.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final UserRepository userRepository;
@@ -23,6 +24,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(LoginLoadingState());
         LoginResponse loginResponse = await userRepository.loginUser(
             email: event.email, password: event.password);
+        SharedPreferenceServices.setAccessToken(
+            loginResponse.data!.accessToken!);
         emit(LoginSucessState(loginResponse: loginResponse));
       } on CustomException catch (e) {
         emit(LoginFailedState(message: e.message));

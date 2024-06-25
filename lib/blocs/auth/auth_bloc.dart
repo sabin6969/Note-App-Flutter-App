@@ -3,6 +3,7 @@ import 'package:note_app_flutter_mobile_app/blocs/auth/auth_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/auth/auth_state.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/auth_repository.dart';
 import 'package:note_app_flutter_mobile_app/exceptions/custom_exceptions.dart';
+import 'package:note_app_flutter_mobile_app/services/shared_preferences_services.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
@@ -13,9 +14,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void handleAuthVerifyAcesstokenEvent(
       AuthVerifyAcesstokenEvent event, Emitter<AuthState> emit) async {
     try {
-      // TODO inject accesstoken here
-      String message = await authRepository.verifyAccesstoken(accessToken: "");
-      emit(AuthSucessState(message: message));
+      String? accessToken = SharedPreferenceServices.getAccessToken();
+      if (accessToken == null) {
+        // access token == null means user has not loggedin yet!
+        emit(AuthFailedState(errorMessage: "Welcome! please proceed with login or signup"));
+      } else {
+        String message = await authRepository.verifyAccesstoken(
+          accessToken: accessToken,
+        );
+        emit(AuthSucessState(message: message));
+      }
     } on CustomException catch (e) {
       emit(AuthFailedState(errorMessage: e.message));
     } catch (e) {
