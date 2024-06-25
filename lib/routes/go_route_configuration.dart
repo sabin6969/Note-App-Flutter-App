@@ -3,12 +3,16 @@ import 'package:go_router/go_router.dart';
 import 'package:note_app_flutter_mobile_app/blocs/auth/auth_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/auth/auth_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/login/login_bloc.dart';
+import 'package:note_app_flutter_mobile_app/blocs/note/note.bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/signup/signup_bloc.dart';
 import 'package:note_app_flutter_mobile_app/data/provider/auth_provider.dart';
+import 'package:note_app_flutter_mobile_app/data/provider/note_provider.dart';
 import 'package:note_app_flutter_mobile_app/data/provider/user_provider.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/auth_repository.dart';
+import 'package:note_app_flutter_mobile_app/data/repository/note_repository.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/user_repository.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
+import 'package:note_app_flutter_mobile_app/views/fall_back_view.dart';
 import 'package:note_app_flutter_mobile_app/views/home_view.dart';
 import 'package:note_app_flutter_mobile_app/views/login_view.dart';
 import 'package:note_app_flutter_mobile_app/views/signup_view.dart';
@@ -16,6 +20,9 @@ import 'package:note_app_flutter_mobile_app/views/splash_view.dart';
 
 class GoRouteConfiguration {
   static GoRouter goRouter = GoRouter(
+    errorBuilder: (context, state) {
+      return const FallBackView();
+    },
     routes: [
       GoRoute(
         path: "/",
@@ -69,7 +76,14 @@ class GoRouteConfiguration {
         path: "/${AppRouteNames.home}",
         name: AppRouteNames.home,
         builder: (context, state) {
-          return const HomeView();
+          return RepositoryProvider(
+            create: (context) => NoteRepository(noteProvider: NoteProvider()),
+            child: BlocProvider(
+              create: (context) =>
+                  NoteBloc(noteRepository: context.read<NoteRepository>()),
+              child: const HomeView(),
+            ),
+          );
         },
       )
     ],

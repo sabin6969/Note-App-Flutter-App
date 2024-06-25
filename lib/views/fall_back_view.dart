@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
 
 class FallBackView extends StatefulWidget {
   const FallBackView({super.key});
@@ -7,15 +9,12 @@ class FallBackView extends StatefulWidget {
   State<FallBackView> createState() => _FallBackViewState();
 }
 
-// TODO: design this page!!!
-
 class _FallBackViewState extends State<FallBackView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Fall back Page"),
+      body: Lottie.asset(
+        AppConstant.notFoundAnimationPath,
       ),
     );
   }
