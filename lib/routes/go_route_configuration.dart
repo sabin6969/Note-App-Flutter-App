@@ -12,6 +12,7 @@ import 'package:note_app_flutter_mobile_app/data/repository/auth_repository.dart
 import 'package:note_app_flutter_mobile_app/data/repository/note_repository.dart';
 import 'package:note_app_flutter_mobile_app/data/repository/user_repository.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
+import 'package:note_app_flutter_mobile_app/views/add_note_view.dart';
 import 'package:note_app_flutter_mobile_app/views/fall_back_view.dart';
 import 'package:note_app_flutter_mobile_app/views/home_view.dart';
 import 'package:note_app_flutter_mobile_app/views/login_view.dart';
@@ -76,14 +77,14 @@ class GoRouteConfiguration {
         path: "/${AppRouteNames.home}",
         name: AppRouteNames.home,
         builder: (context, state) {
-          return RepositoryProvider(
-            create: (context) => NoteRepository(noteProvider: NoteProvider()),
-            child: BlocProvider(
-              create: (context) =>
-                  NoteBloc(noteRepository: context.read<NoteRepository>()),
-              child: const HomeView(),
-            ),
-          );
+          return const HomeView();
+        },
+      ),
+      GoRoute(
+        path: "/${AppRouteNames.addNote}",
+        name: AppRouteNames.addNote,
+        builder: (context, state) {
+          return const AddNoteView();
         },
       )
     ],

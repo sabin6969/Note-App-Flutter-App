@@ -6,4 +6,5 @@ class AppConstant {
       "assets/animations/loading_animation.json";
   static String emptyListAnimationPath =
       "assets/animations/empty_list_animation.json";
+  static String noteImagePath = "assets/images/notes_image.png";
 }

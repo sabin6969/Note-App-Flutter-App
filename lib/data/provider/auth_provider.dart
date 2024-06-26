@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:note_app_flutter_mobile_app/constants/api_constant.dart';
@@ -7,6 +8,7 @@ import 'package:note_app_flutter_mobile_app/exceptions/custom_exceptions.dart';
 class AuthProvider {
   Future<String> verifyAccesstoken({required String accessToken}) async {
     try {
+      await InternetAddress.lookup(googleUrl);
       Response response = await post(
         Uri.parse(
           "$baseUrl/$authRoute/verifyAccesstoken",

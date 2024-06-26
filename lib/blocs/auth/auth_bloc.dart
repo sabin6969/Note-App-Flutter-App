@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/auth/auth_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/auth/auth_state.dart';
@@ -17,7 +19,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String? accessToken = SharedPreferenceServices.getAccessToken();
       if (accessToken == null) {
         // access token == null means user has not loggedin yet!
-        emit(AuthFailedState(errorMessage: "Welcome! please proceed with login or signup"));
+        emit(AuthFailedState(
+            errorMessage: "Welcome! please proceed with login or signup"));
       } else {
         String message = await authRepository.verifyAccesstoken(
           accessToken: accessToken,
@@ -26,6 +29,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } on CustomException catch (e) {
       emit(AuthFailedState(errorMessage: e.message));
+    } on SocketException {
+      emit(AuthFailedState(errorMessage: "No internet connection!!"));
     } catch (e) {
       emit(AuthFailedState(errorMessage: "Something went wrong!!"));
     }

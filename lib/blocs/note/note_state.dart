@@ -6,6 +6,21 @@ final class NoteInitialState extends NoteState {}
 
 final class NoteLoadingState extends NoteState {}
 
+final class NoteSucessState extends NoteState {
+  final String message;
+  NoteSucessState({required this.message});
+}
+
+final class NoteFailedState extends NoteState {
+  final String message;
+  NoteFailedState({required this.message});
+}
+
+final class NoteValidationFailedState extends NoteState {
+  final String message;
+  NoteValidationFailedState({required this.message});
+}
+
 final class NoteLoadedState extends NoteState {
   List<Note> notes;
   NoteLoadedState({required this.notes});

@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:note_app_flutter_mobile_app/constants/api_constant.dart';
 import 'package:note_app_flutter_mobile_app/data/models/note_model.dart';
@@ -10,7 +10,7 @@ class NoteProvider {
   List<Note> notes = [];
   Future<List<Note>> getAllNotes({required String accessToken}) async {
     try {
-      debugPrint("$baseUrl/$noteRoute/getAllNotes");
+      await InternetAddress.lookup(googleUrl);
       Response response = await get(
         Uri.parse(
           "$baseUrl/$noteRoute/getAllNotes",
@@ -47,6 +47,48 @@ class NoteProvider {
         throw InternalServerError(
             errorMessage: jsonDecode(response.body)["message"] ??
                 "Internal server error!");
+      default:
+        throw const CustomException(message: "Something went wrong");
+    }
+  }
+
+  Future<String> createNote(
+      {required String accessToken,
+      required String noteTitle,
+      required String noteDescription}) async {
+    try {
+      Response response = await post(
+        Uri.parse("$baseUrl/$noteRoute/createNote"),
+        headers: {
+          "Authorization": "Bearer $accessToken",
+          "content-type": "application/json",
+        },
+        body: jsonEncode(
+          {
+            "noteTitle": noteTitle,
+            "noteDescription": noteDescription,
+          },
+        ),
+      );
+      return getJsonResponse(response);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  String getJsonResponse(Response response) {
+    switch (response.statusCode) {
+      case 201:
+        return jsonDecode(response.body)["message"] ?? "";
+      case 400:
+        throw BadRequestException(
+            errorMessage: jsonDecode(response.body)["message"] ?? "");
+      case 401:
+        throw UnauthorizedError(
+            errorMessage: jsonDecode(response.body)["message"] ??
+                "Unauthorized access login again");
+      case 500:
+        throw InternalServerError(errorMessage: "Internal server error");
       default:
         throw const CustomException(message: "Something went wrong");
     }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart';
 import 'package:note_app_flutter_mobile_app/constants/api_constant.dart';
@@ -16,8 +15,8 @@ class UserProvider {
     required String fullName,
   }) async {
     try {
+      await InternetAddress.lookup(googleUrl);
       String fullUrl = "$baseUrl/$userRoute/createAccount";
-      debugPrint(fullUrl);
       var postUri = Uri.parse(fullUrl);
       MultipartRequest request = MultipartRequest("POST", postUri);
       MultipartFile multipartFile = await MultipartFile.fromPath(
@@ -62,6 +61,7 @@ class UserProvider {
   Future<LoginResponse> login(
       {required String email, required String password}) async {
     try {
+      await InternetAddress.lookup(googleUrl);
       Response response = await post(
         Uri.parse(
           "$baseUrl/$userRoute/login",

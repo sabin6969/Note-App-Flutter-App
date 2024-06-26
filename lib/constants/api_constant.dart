@@ -3,3 +3,4 @@ const String baseUrl =
 const String userRoute = "user";
 const String noteRoute = "note";
 const String authRoute = "auth";
+const String googleUrl = "google.com";

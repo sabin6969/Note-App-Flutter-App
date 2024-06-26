@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note.bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_state.dart';
 import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
+import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
+import 'package:note_app_flutter_mobile_app/utils/show_info_dialog.dart';
 import 'package:note_app_flutter_mobile_app/views/drawer.dart';
 
 class HomeView extends StatefulWidget {
@@ -25,8 +28,18 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text("Note App"),
+        centerTitle: false,
+        title: const Text(
+          "Notes",
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showInfoDialog(context: context);
+            },
+            icon: const Icon(Icons.info_outline_rounded),
+          )
+        ],
       ),
       drawer: const ProfileDrawer(),
       body: BlocConsumer<NoteBloc, NoteState>(
@@ -43,14 +56,19 @@ class _HomeViewState extends State<HomeView> {
                     },
                     child: ListView(
                       children: [
-                        Lottie.asset(
-                          AppConstant.emptyListAnimationPath,
+                        Image.asset(AppConstant.noteImagePath),
+                        const SizedBox(
+                          height: 30,
                         ),
-                        const Text(
-                          "Looks like you have't added any notes yet!",
+                        const Center(
+                          child: Text(
+                            "Looks like you have't added any notes yet!",
+                          ),
                         ),
-                        const Text(
-                          "Try adding some!",
+                        const Center(
+                          child: Text(
+                            "Try adding some!",
+                          ),
                         ),
                       ],
                     ),
@@ -70,6 +88,23 @@ class _HomeViewState extends State<HomeView> {
                       },
                     ),
                   );
+          } else if (state is NoteLoadingFailedState) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Text(state.errorMessage),
+                ),
+                TextButton(
+                  onPressed: () {
+                    context.read<NoteBloc>().add(LoadNoteEvent());
+                  },
+                  child: const Text(
+                    "Try Again",
+                  ),
+                )
+              ],
+            );
           }
           return const Center(
             child: Text("Something went wrong!"),
@@ -78,7 +113,11 @@ class _HomeViewState extends State<HomeView> {
         listener: (context, state) {},
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          GoRouter.of(context).pushNamed(
+            AppRouteNames.addNote,
+          );
+        },
         child: const Icon(
           Icons.add,
         ),
