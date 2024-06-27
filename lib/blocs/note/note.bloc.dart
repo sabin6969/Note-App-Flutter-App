@@ -14,6 +14,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   NoteBloc({required this.noteRepository}) : super(NoteInitialState()) {
     on<LoadNoteEvent>(handleLoadNoteEvent);
     on<AddNoteEvent>(handleAddNoteEvent);
+    on<DeleteNoteEvent>(handleDeleteNoteEvent);
   }
 
   void handleLoadNoteEvent(LoadNoteEvent event, Emitter<NoteState> emit) async {
@@ -66,6 +67,25 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
       } catch (e) {
         emit(NoteFailedState(message: "Something went wrong"));
       }
+    }
+  }
+
+  void handleDeleteNoteEvent(
+      DeleteNoteEvent event, Emitter<NoteState> emit) async {
+    try {
+      String accessToken = SharedPreferenceServices.getAccessToken() ?? "";
+      emit(NoteLoadingState());
+      String message = await noteRepository.deleteNote(
+          accessToken: accessToken, noteId: event.noteId);
+      add(LoadNoteEvent());
+      emit(NoteSucessState(message: message));
+    } on SocketException {
+      emit(NoteFailedState(message: "No internet connection try again"));
+    } on CustomException catch (e) {
+      emit(NoteFailedState(message: e.message));
+    } catch (e) {
+      emit(NoteFailedState(
+          message: "Something went wrong while deleting notes"));
     }
   }
 }

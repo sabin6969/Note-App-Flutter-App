@@ -78,6 +78,8 @@ class NoteProvider {
 
   String getJsonResponse(Response response) {
     switch (response.statusCode) {
+      case 200:
+        return jsonDecode(response.body)["message"] ?? "";
       case 201:
         return jsonDecode(response.body)["message"] ?? "";
       case 400:
@@ -88,9 +90,29 @@ class NoteProvider {
             errorMessage: jsonDecode(response.body)["message"] ??
                 "Unauthorized access login again");
       case 500:
-        throw InternalServerError(errorMessage: "Internal server error");
+        throw InternalServerError(
+          errorMessage: "Internal server error",
+        );
       default:
         throw const CustomException(message: "Something went wrong");
+    }
+  }
+
+  Future<String> deleteNote(
+      {required String accessToken, required String noteId}) async {
+    try {
+      Response response = await delete(
+        Uri.parse(
+          "$baseUrl/$noteRoute/deleteNote/$noteId",
+        ),
+        headers: {
+          "Authorization": "Bearer $accessToken",
+        },
+      );
+      String message = getJsonResponse(response);
+      return message;
+    } catch (e) {
+      return Future.error(e);
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:note_app_flutter_mobile_app/blocs/note/note_state.dart';
 import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
 import 'package:note_app_flutter_mobile_app/utils/show_info_dialog.dart';
+import 'package:note_app_flutter_mobile_app/utils/show_toast_message.dart';
 import 'package:note_app_flutter_mobile_app/views/drawer.dart';
 
 class HomeView extends StatefulWidget {
@@ -84,6 +85,18 @@ class _HomeViewState extends State<HomeView> {
                           title: Text(state.notes[index].noteTitle ?? ""),
                           subtitle:
                               Text(state.notes[index].noteDescription ?? ""),
+                          trailing: IconButton(
+                            onPressed: () {
+                              context.read<NoteBloc>().add(
+                                    DeleteNoteEvent(
+                                      noteId: state.notes[index].id ?? "",
+                                    ),
+                                  );
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -105,12 +118,22 @@ class _HomeViewState extends State<HomeView> {
                 )
               ],
             );
+          } else if (state is NoteFailedState) {
+            return Center(
+              child: Text(state.message),
+            );
           }
           return const Center(
             child: Text("Something went wrong!"),
           );
         },
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is NoteSucessState) {
+            showToastMessage(message: state.message);
+          } else if (state is NoteFailedState) {
+            showToastMessage(message: state.message);
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
