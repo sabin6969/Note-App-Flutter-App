@@ -65,10 +65,14 @@ class _AddNoteViewState extends State<AddNoteView> {
             ),
             child: Column(
               children: [
+                const SizedBox(
+                  height: 20,
+                ),
                 Expanded(
                   child: TextFormField(
+                    textCapitalization: TextCapitalization.words,
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     controller: _noteTitleController,
@@ -92,7 +96,7 @@ class _AddNoteViewState extends State<AddNoteView> {
                     maxLines: null,
                     style: const TextStyle(
                       fontWeight: FontWeight.normal,
-                      fontSize: 20,
+                      fontSize: 16,
                     ),
                     decoration: const InputDecoration(
                       hintText: "Note Description",
