@@ -68,29 +68,27 @@ class _AddNoteViewState extends State<AddNoteView> {
                 const SizedBox(
                   height: 20,
                 ),
-                Expanded(
-                  child: TextFormField(
-                    textCapitalization: TextCapitalization.words,
-                    style: const TextStyle(
-                      fontSize: 16,
+                TextFormField(
+                  textCapitalization: TextCapitalization.words,
+                  maxLines: null,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  controller: _noteTitleController,
+                  decoration: const InputDecoration(
+                    hintText: "Note Title",
+                    hintStyle: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 20,
                     ),
-                    controller: _noteTitleController,
-                    decoration: const InputDecoration(
-                      hintText: "Note Title",
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                      ),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
                 const Divider(),
                 Expanded(
-                  flex: 9,
                   child: TextFormField(
                     controller: _noteDescriptionController,
                     maxLines: null,
