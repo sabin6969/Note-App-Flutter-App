@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -6,6 +9,7 @@ import 'package:note_app_flutter_mobile_app/blocs/note/note.bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_state.dart';
 import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
+import 'package:note_app_flutter_mobile_app/main.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
 import 'package:note_app_flutter_mobile_app/utils/show_info_dialog.dart';
 import 'package:note_app_flutter_mobile_app/utils/show_toast_message.dart';
@@ -27,6 +31,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -78,28 +83,7 @@ class _HomeViewState extends State<HomeView> {
                     onRefresh: () async {
                       context.read<NoteBloc>().add(LoadNoteEvent());
                     },
-                    child: ListView.builder(
-                      itemCount: state.notes.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(state.notes[index].noteTitle ?? ""),
-                          subtitle:
-                              Text(state.notes[index].noteDescription ?? ""),
-                          trailing: IconButton(
-                            onPressed: () {
-                              context.read<NoteBloc>().add(
-                                    DeleteNoteEvent(
-                                      noteId: state.notes[index].id ?? "",
-                                    ),
-                                  );
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    child: displayNotes(state),
                   );
           } else if (state is NoteLoadingFailedState) {
             return Column(
@@ -145,6 +129,82 @@ class _HomeViewState extends State<HomeView> {
           Icons.add,
         ),
       ),
+    );
+  }
+
+  GridView displayNotes(NoteLoadedState state) {
+    return GridView.builder(
+      itemCount: state.notes.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(
+            left: 8,
+            right: 8,
+            bottom: 8,
+            top: 0,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Colors.black,
+                width: 1,
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: IconButton(
+                      onPressed: () {
+                        context.read<NoteBloc>().add(
+                              DeleteNoteEvent(
+                                noteId: state.notes[index].id ?? "",
+                              ),
+                            );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          state.notes[index].noteTitle ?? "",
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            state.notes[index].noteDescription ?? "",
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
