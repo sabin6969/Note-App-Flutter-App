@@ -10,6 +10,12 @@ abstract class KNoteRepository {
   });
   Future<String> deleteNote(
       {required String accessToken, required String noteId});
+  Future<String> updateNote({
+    required String noteId,
+    required String accessToken,
+    required String noteDescription,
+    required String noteTitle,
+  });
 }
 
 class NoteRepository extends KNoteRepository {
@@ -38,5 +44,20 @@ class NoteRepository extends KNoteRepository {
       {required String accessToken, required String noteId}) async {
     return await noteProvider.deleteNote(
         accessToken: accessToken, noteId: noteId);
+  }
+
+  @override
+  Future<String> updateNote({
+    required String noteId,
+    required String accessToken,
+    required String noteDescription,
+    required String noteTitle,
+  }) async {
+    return await noteProvider.updateNote(
+      noteId: noteId,
+      noteTitle: noteTitle,
+      noteDescription: noteDescription,
+      accessToken: accessToken,
+    );
   }
 }

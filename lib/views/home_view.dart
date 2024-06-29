@@ -50,7 +50,7 @@ class _HomeViewState extends State<HomeView> {
       drawer: const ProfileDrawer(),
       body: BlocConsumer<NoteBloc, NoteState>(
         builder: (context, state) {
-          if (state is NoteLoadingState) {
+          if (state is NoteLoadingState || state is NoteValidationFailedState) {
             return Center(
               child: Lottie.asset(AppConstant.loadingAnimationPath),
             );
@@ -170,6 +170,26 @@ class _HomeViewState extends State<HomeView> {
                       icon: const Icon(
                         Icons.delete,
                       )),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: IconButton(
+                    onPressed: () {
+                      GoRouter.of(context).pushNamed(
+                        AppRouteNames.updateNote,
+                        pathParameters: {
+                          "noteId": state.notes[index].id!,
+                          "noteTitle": state.notes[index].noteTitle!,
+                          "noteDescription":
+                              state.notes[index].noteDescription!,
+                        },
+                      );
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

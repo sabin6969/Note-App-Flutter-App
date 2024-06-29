@@ -15,6 +15,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     on<LoadNoteEvent>(handleLoadNoteEvent);
     on<AddNoteEvent>(handleAddNoteEvent);
     on<DeleteNoteEvent>(handleDeleteNoteEvent);
+    on<UpdateNoteEvent>(handleNoteUpdateEvent);
   }
 
   void handleLoadNoteEvent(LoadNoteEvent event, Emitter<NoteState> emit) async {
@@ -50,6 +51,7 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
           message: "Both title and description is required",
         ),
       );
+      add(LoadNoteEvent());
     } else {
       try {
         emit(NoteLoadingState());
@@ -86,6 +88,36 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
     } catch (e) {
       emit(NoteFailedState(
           message: "Something went wrong while deleting notes"));
+    }
+  }
+
+  void handleNoteUpdateEvent(
+      UpdateNoteEvent event, Emitter<NoteState> emit) async {
+    if (event.noteDescription.isEmpty || event.noteTitle.isEmpty) {
+      emit(
+        NoteValidationFailedState(
+          message: "Both title and description is required",
+        ),
+      );
+      add(LoadNoteEvent());
+    } else {
+      try {
+        emit(NoteLoadingState());
+        String accessToken = SharedPreferenceServices.getAccessToken() ?? "";
+        String message = await noteRepository.updateNote(
+          accessToken: accessToken,
+          noteTitle: event.noteTitle,
+          noteDescription: event.noteDescription,
+          noteId: event.noteId,
+        );
+        emit(NoteSucessState(message: message));
+        // again fetching the all the notes after new one is added
+        add(LoadNoteEvent());
+      } on CustomException catch (e) {
+        emit(NoteFailedState(message: e.message));
+      } catch (e) {
+        emit(NoteFailedState(message: "Something went wrong"));
+      }
     }
   }
 }

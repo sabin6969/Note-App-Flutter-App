@@ -3,4 +3,5 @@ class AppRouteNames {
   static const String signup = "signup";
   static const String home = "home";
   static const String addNote = "addNote";
+  static const String updateNote = "updateNote";
 }

@@ -15,6 +15,7 @@ import 'package:note_app_flutter_mobile_app/views/home_view.dart';
 import 'package:note_app_flutter_mobile_app/views/login_view.dart';
 import 'package:note_app_flutter_mobile_app/views/signup_view.dart';
 import 'package:note_app_flutter_mobile_app/views/splash_view.dart';
+import 'package:note_app_flutter_mobile_app/views/update_note_view.dart';
 
 class GoRouteConfiguration {
   static GoRouter goRouter = GoRouter(
@@ -82,6 +83,18 @@ class GoRouteConfiguration {
         name: AppRouteNames.addNote,
         builder: (context, state) {
           return const AddNoteView();
+        },
+      ),
+      GoRoute(
+        path:
+            "/${AppRouteNames.updateNote}/:noteId/:noteTitle/:noteDescription",
+        name: AppRouteNames.updateNote,
+        builder: (context, state) {
+          return UpdateNoteView(
+            noteId: state.pathParameters["noteId"]!,
+            noteTitle: state.pathParameters["noteTitle"]!,
+            noteDescription: state.pathParameters["noteDescription"]!,
+          );
         },
       )
     ],

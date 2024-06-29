@@ -76,6 +76,24 @@ class NoteProvider {
     }
   }
 
+  Future<String> deleteNote(
+      {required String accessToken, required String noteId}) async {
+    try {
+      Response response = await delete(
+        Uri.parse(
+          "$baseUrl/$noteRoute/deleteNote/$noteId",
+        ),
+        headers: {
+          "Authorization": "Bearer $accessToken",
+        },
+      );
+      String message = getJsonResponse(response);
+      return message;
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
   String getJsonResponse(Response response) {
     switch (response.statusCode) {
       case 200:
@@ -98,21 +116,23 @@ class NoteProvider {
     }
   }
 
-  Future<String> deleteNote(
-      {required String accessToken, required String noteId}) async {
-    try {
-      Response response = await delete(
-        Uri.parse(
-          "$baseUrl/$noteRoute/deleteNote/$noteId",
-        ),
-        headers: {
-          "Authorization": "Bearer $accessToken",
-        },
-      );
-      String message = getJsonResponse(response);
-      return message;
-    } catch (e) {
-      return Future.error(e);
-    }
+  Future<String> updateNote(
+      {required String noteId,
+      required String noteTitle,
+      required String noteDescription,
+      required String accessToken}) async {
+    Response response = await patch(
+      Uri.parse("$baseUrl/$noteRoute/updateNote/$noteId"),
+      headers: {
+        "Authorization": "Bearer $accessToken",
+        "content-type": "application/json",
+      },
+      body: jsonEncode({
+        "noteTitle": noteTitle,
+        "noteDescription": noteDescription,
+      }),
+    );
+    String message = getJsonResponse(response);
+    return message;
   }
 }
