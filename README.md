@@ -31,7 +31,7 @@ A feature-rich note-taking application built with Flutter. The backend is develo
    flutter pub get
    ```
 
-3. Configure the backend server URL in your Flutter app. Open `lib/config.dart` (or equivalent configuration file) and update the `API_BASE_URL` with your backend server URL.
+3. Configure the backend server URL in your Flutter app. Open `lib/constants/api_constant.dart` and update the `baseUrl` with your backend server URL.
 
 4. Run the Flutter app:
    ```bash
