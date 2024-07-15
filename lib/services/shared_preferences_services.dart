@@ -14,4 +14,8 @@ class SharedPreferenceServices {
   static void setAccessToken(String accessToken) async {
     await _sharedPreferences?.setString(_accessTokenKey, accessToken);
   }
+
+  static void clearSharedPreferences() async {
+    await _sharedPreferences?.clear();
+  }
 }

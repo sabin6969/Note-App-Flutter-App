@@ -11,6 +11,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   AuthBloc({required this.authRepository}) : super(AuthInitialState()) {
     on<AuthVerifyAcesstokenEvent>(handleAuthVerifyAcesstokenEvent);
+    on<AuthLogoutEvent>(handleAuthLogoutEvent);
   }
 
   void handleAuthVerifyAcesstokenEvent(
@@ -35,5 +36,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthFailedState(errorMessage: "Something went wrong!!"));
     }
     return;
+  }
+
+  void handleAuthLogoutEvent(
+      AuthLogoutEvent event, Emitter<AuthState> emit) async {
+    try {
+      emit(AuthLoadingState());
+      String message = await authRepository.logout(
+        accessToken: SharedPreferenceServices.getAccessToken() ?? "",
+      );
+      SharedPreferenceServices.clearSharedPreferences();
+      emit(AuthLogoutState(message: message));
+    } on CustomException catch (e) {
+      emit(AuthFailedState(errorMessage: e.message));
+    } catch (e) {
+      emit(AuthFailedState(errorMessage: "Something went wrong"));
+    }
   }
 }

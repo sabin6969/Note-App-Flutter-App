@@ -5,10 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:note_app_flutter_mobile_app/blocs/auth/auth_bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note.bloc.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_event.dart';
 import 'package:note_app_flutter_mobile_app/blocs/note/note_state.dart';
 import 'package:note_app_flutter_mobile_app/constants/app_constant.dart';
+import 'package:note_app_flutter_mobile_app/data/provider/auth_provider.dart';
+import 'package:note_app_flutter_mobile_app/data/repository/auth_repository.dart';
 import 'package:note_app_flutter_mobile_app/main.dart';
 import 'package:note_app_flutter_mobile_app/routes/app_route_names.dart';
 import 'package:note_app_flutter_mobile_app/utils/show_info_dialog.dart';
@@ -47,7 +50,14 @@ class _HomeViewState extends State<HomeView> {
           )
         ],
       ),
-      drawer: const ProfileDrawer(),
+      drawer: RepositoryProvider(
+        create: (context) => AuthRepository(authProvider: AuthProvider()),
+        child: BlocProvider(
+          create: (context) =>
+              AuthBloc(authRepository: context.read<AuthRepository>()),
+          child: const ProfileDrawer(),
+        ),
+      ),
       body: BlocConsumer<NoteBloc, NoteState>(
         builder: (context, state) {
           if (state is NoteLoadingState || state is NoteValidationFailedState) {
